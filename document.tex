@@ -9,7 +9,7 @@
 \usepackage{setspace}
 \usepackage{comment}
 \usepackage{amsmath}
-\usepackage{amssymb}
+\usepackage[numbers]{natbib}
 \usepackage{hyperref}
 %-------------------------------------------------------------------------------
 \newcommand{\p}{$\bullet$}
@@ -28,8 +28,8 @@
 
 \vskip 2.2cm
 
-\Large{Título: Algoritmos Multi-BSP para o problema da subsoma de tamanho máximo
-3D}
+\Large{Título: Algoritmos Multi-BSP para o problema da submatriz de tamanho
+máximo 3D}
 
 \vskip 1.5cm
 
@@ -38,8 +38,9 @@
 \vskip 1.5cm
 
 \Large{Projeto de Pesquisa apresentado como exigência da primeira fase do
-processo seletivo para ingresso no programa de Doutorado em Computação promovido entre a Universidade Federal de Mato Grosso Sul e a 
-Universidade Federal de Goiás.}
+processo seletivo para ingresso no programa de Pós-Graduação em Ciência
+da Computação, nível Doutorado, promovido entre a Universidade
+Federal de Mato Grosso Sul e a Universidade Federal de Goiás.}
 
 \vskip 2.5cm
 
@@ -92,11 +93,11 @@ possíveis no conjunto de entrada apresentado. A Figura \ref{fig:maxsubarray}
 apresenta um exemplo para este problema. A motivação para este problema pode ser
 encontrada em áreas como visão computacional, identificando em imagens (sejam
 elas de áreas médicas, de astronomia, termais, entre outras) as regiões de
-interesse. A Figura {fig:brightest} apresenta um exemplo desta aplicação.
+interesse. A Figura \ref{fig:brightest} apresenta um exemplo desta aplicação.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=.35\textwidth]{maxsubarray.png}
+\includegraphics[width=.4\textwidth]{maxsubarray.png}
 \caption{A região destacada é submatriz de soma máxima para a matriz
 apresentada.}
 \label{fig:maxsubarray}
@@ -104,7 +105,7 @@ apresentada.}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=.35\textwidth]{brightest.png}
+\includegraphics[width=.6\textwidth]{brightest.png}
 \caption{Área mais brilhante em uma imagem de astronomia \cite{bae2007}.}
 \label{fig:brightest}
 \end{figure}
@@ -112,12 +113,13 @@ apresentada.}
 O algoritmo linear proposto por Kadane pode ser extendido para resolver a versão
 2D. A matriz de entrada é substituida pela soma de prefixo de suas linhas, e com
 essa nova matriz, a submatriz de soma máxima é então calculada da seguinte
-forma: Para cada par de colunas possíveis (denominadas $Cgh$, tal que $1 <= g
+forma: para cada par de colunas possíveis (denominadas $Cgh$, tal que $1 <= g
 <= h <= n$), o algoritmo linear de Kanade é usado para, naquela configuração de
 colunas, encontrar a maior soma daquela configuração, delimitando portanto as linhas da matriz considerada. Assim, para
-uma matriz com $nxn$ elementos, precisamos calcular $\frac{n(n-1)}{2} Cgh's$, e
-cada um deles utiliza $O(n)$ passos para encontrar a submatriz de soma máxima
-para aquela configuração, resultando assim em um algoritmo $O(n^3)$.
+uma matriz com $nxn$ elementos, é necessário calcular $\frac{n(n-1)}{2} Cgh's$,
+e cada um deles utiliza $O(n)$ passos para encontrar a submatriz de soma máxima
+para aquela configuração. Portanto, o algoritmo resultante possui complexidade
+$O(n^3)$.
 
 \subsection{Algoritmos Paralelos}
 
@@ -156,7 +158,7 @@ algoritmo BSP.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=.35\textwidth]{bsp.png}
+\includegraphics[width=.4\textwidth]{bsp.png}
 \caption{Super passo BSP - computação local, comunicação e barreira de
 sincronização (Fonte:
 \url{http://ww2.cs.mu.oz.au/~aaron/subjects/comp90025_2011_sm2/lectures/node195.html}) }
@@ -164,11 +166,18 @@ sincronização (Fonte:
 \end{figure}
 
 O modelo BSP pode ser combinado com o modelo CGM (\textit{Coarse Grained
-Multicomputer}), este último apresentado por Dehne \textit{et al}
-\cite{Dehne:1993:SPG:160985.161154}, em situações em que a entrada do problema é
+Multicomputer}, exemplificado pela Figura \ref{fig:cgm}), este último
+apresentado por Dehne \textit{et al} \cite{Dehne:1993:SPG:160985.161154}, em situações em que a entrada do problema é
 muito maior que o número de processadores disponíveis. Um algoritmo CGM típico
-consisten de uma sequência de rodadas, alternando entre etapas de computação e
+consiste de uma sequência de rodadas, alternando entre etapas de computação e
 comunicação separados por barreiras de comunicação.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.6\textwidth]{cgm.png}
+\caption{Modelo CGM \cite{loureiro2010}. }
+\label{fig:cgm}
+\end{figure}
 
 Alves \textit{et al} apresentam algoritmos BSP/CGM tanto para o problema 1D
 quanto para o problema 2D \cite{alves2004}. O problema 1D é resolvido
@@ -178,8 +187,8 @@ de computação local, pois este é igual a $O(\frac{n^3}{p})$.
 
 \subsubsection{Multi-BSP}
 
-O surgimento de arquiteturas \textit{multicore} e \textit{manycore} despertou a
-possibilidade de construção de implementação de algoritmos em plataformas
+O surgimento de arquiteturas \textit{multicore} e \textit{manycore} despertou o
+interesse na implementação de algoritmos em plataformas
 híbridas. Com essa perspectiva, Valiant apresentou o modelo Multi-BSP
 \cite{Valiant:2008:BMM:1431008.1431011}, modelo este que explicita parâmetros
 como número de processadores, tamanho de memória e cache, custos de comunicação
@@ -195,21 +204,23 @@ modelos PRAM e BSP/CGM \cite{6473291,doi:10.1117/12.928318,takaoka2014efficient}
 A efetividade dos algoritmos propostos é comprovada através de implementação dos
 mesmos em alguma arquitetura disponível, apresentando o \textit{speedup} em
 relação ao algoritmo sequencial tradicional, quando esta implementação é
-possível.
+possível. A seguir serão apresentadas as principais bibliotecas para
+implementação de soluções paralelas.
 
 \subsubsection{OpenMP}
 
 A biblioteca OpenMP\footnote{\url{http://openmp.org/wp/}} permite o paralelismo
 em através de memória compartilhada com utilização de \textit{threads} (que atuam
-como os processadores dos algoritmos) para arquiteturas \textit{multicore}. A
-comunicação entre os processadores é feita via memória compartilhada, ficando
-sob responsabilidade do programador tratar de questões como regiões críticas e
-condições de corrida.
+como os processadores dos algoritmos teóricos) para arquiteturas
+\textit{multicore}. A comunicação entre os processadores é feita via memória
+compartilhada, ficando sob responsabilidade do programador tratar de questões como regiões críticas e
+condições de corrida. Portanto, um processo é iniciado e dentro dele
+\textit{threads} são criadas para resolver um problema em comum.
 
 \subsubsection{MPI}
 
-O modelo BSP/CGM pode facilmente ser implementado utilizando bibliotecas que
-implementam o padrão MPI (\textit{Message Passing
+O modelo BSP/CGM pode ser facilmente mapeado e implementado utilizando
+bibliotecas que implementam o padrão MPI (\textit{Message Passing
 Interface})\footnote{\url{https://computing.llnl.gov/tutorials/mpi/}}.
 Utilizando este padrão, os processadores são tipicamente interligados através de uma rede de
 comunicação, cada um com sua memória local, e a comunicação é feita através da
@@ -243,11 +254,11 @@ completamente novo para um problema já conhecido.
 
 \subsection{O problema 3D}
 
-Perumalla e Deo\cite{journals/ppl/PerumallaD95} indicam que os problemas 1D e 2D
+Perumalla e Deo indicam que os problemas 1D e 2D
 podem ser generalizados para $d$ dimensões, da seguinte forma: dado um cubo $d-$dimensional com lado de tamanho $n$ de números reais,
 encontre o sub$-d-$cubo que possui a maior soma de todos os sub$-d-$cubos
-possíveis. Usando a mesma estratégia da versão 2D descrita anteriormente, é
-possível descrever um algoritmo para resolver o problema $n-$dimensional. O
+possíveis \cite{journals/ppl/PerumallaD95}. Usando a mesma estratégia da versão
+2D descrita anteriormente, é possível descrever um algoritmo para resolver o problema $n-$dimensional. O
 algoritmo PRAM sugerido para um $d-$cubo com lado de tamanho $n$ pode ser
 computado em $O(log n)$, usando $n\binom{n}{2}^{d-1}$ processadores.
 
@@ -269,7 +280,7 @@ problema possui complexidade $O(n^5)$, tornando o algoritmo proibitivamente
 custoso, motivando a obtenção de versões paralelas para resolução do problema
 dentro de um período de tempo aceitável.
 
-O algoritmo PRAM apresentado não pode ser implementando nas arquiteturas
+O algoritmo PRAM conhecido não pode ser implementando nas arquiteturas
 disponíveis, pois o número de processadores utilizado também é proibitivo. Além
 disso, características não incorporadas ao modelo PRAM durante o
 desenvolvimento dos algoritmos, tais como custo adicional para referência à memória global e latência, 
@@ -283,11 +294,77 @@ estruturas do algoritmo como para comparar os \textit{speedups} obtidos.
 
 \section{Metodologia}
 
+O desenvolvimento do presente projeto estrutura-se nas seguintes atividades:
 
+\begin{enumerate}
+  \item complementar a revisão bibliográfica já realizada, detalhando os
+  algoritmos, implementações e detalhes que mereçam destaque para o projeto;
+  \item estudar as bibliotecas OpenMp, MPI e CUDA/OpenCl, para implementação
+  dos algoritmos presentes na literatura;
+  \item implementar a solução trivial (ingênua) do problema 3D nas arquiteturas
+  descritas;
+  \item propôr novos algoritmos Multi-BSP para o problema 3D, apresentando
+  estratégias de solução paralela que faça a divisão de:
+  	\begin{itemize}
+  	  \item dados;
+  	  \item computação a ser realizada;
+  	  \item ambas;
+  	\end{itemize}
+  \item implementar os algoritmos propostos nas arquiteturas alvo com as
+  bibliotecas mencionadas, ressaltando as diferenças e pecurialidades
+  particulares de cada uma delas;
+  \item realizar experimentos para avaliar a eficiência das soluções propostas,
+  tanto em termos de sua complexidade teórica como performance de implementação
+  e execução, comparando com soluções pré-existentes, se existirem.
+\end{enumerate}
 
 \section{Etapas e Cronograma}
 
+O cronograma previsto contempla a realização do curso de doutorado e do projeto
+aqui descrito e é apresentado na Tabela \ref{tab:cronograma}. O cronograma está
+organizado em termos das etapas que consistem em pontos importantes do curso e da execução do projeto.
+
+\begin{table}[htbp]
+\begin{center}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+\multicolumn{ 1}{|c|}{\textbf{Cronograma previsto}} & \multicolumn{ 2}{c|}{\textbf{1º Ano}} & \multicolumn{ 2}{c|}{\textbf{2º ano}} & \multicolumn{ 2}{c|}{\textbf{3º ano}} & \multicolumn{ 2}{c|}{\textbf{4º ano}} \\ \cline{ 2- 9}
+\multicolumn{ 1}{|l|}{} & 1º Sem & 2º Sem & 3º Sem & 4º Sem & 5º Sem & 6º Sem & 7º Sem & 8º Sem \\ \hline
+Obtenção de Créditos em disciplinas & X & X &  &  &  &  &  &  \\ \hline
+Revisão da Literatura &  & X & X &  &  &  &  &  \\ \hline
+Planejamento e modelagem dos algoritmos &  &  & X & X &  &  &  &  \\ \hline
+Implementação dos algoritmos &  &  &  & X & X & X &  &  \\ \hline
+Testes dos algoritmos &  &  &  &  & X & X &  &  \\ \hline
+Verificação de resultados &  &  &  &  &  & X & X &  \\ \hline
+Comparação com outras soluções já desenvolvidas &  &  &  &  &  & X & X &  \\ \hline
+Ajustes e otimização dos algoritmos desenvolvidos &  &  &  &  &  &  & X &  \\ \hline
+Análise e interpretação dos resultados &  &  &  &  &  &  & X &  \\ \hline
+Publicação de artigos &  &  &  &  &  &  & X & X \\ \hline
+Escrita da tese &  &  &  &  & X & X & X & X \\ \hline
+\end{tabular}%
+}
+\end{center}
+\caption{Cronograna de Execução do Projeto Previsto}
+\label{tab:cronograma}
+\end{table}
+
+
+
 \section{Resultados Esperados}
+
+Quanto aos produtos finais esperados, impactos e benefícios, é possível citar:
+
+\begin{itemize}
+  \item o produto final principal é a obtenção de algoritmos paralelos
+  eficientes para resolver os mencionados nesse projeto;
+  \item publicação de artigos científicos em revistas e/ou congressos
+  internacionais e nacionais qualificados pelo QUALIS (Capes);
+  \item disponibilização na web de ferramentas computacionais para a solução dos
+  problemas tratados;
+  \item aplicação prática das soluções encontradas em problemas e estudos de
+  caso reais.
+\end{itemize}
 
 %-------------------------------------------------------------------------------
 \bibliographystyle{apalike}
