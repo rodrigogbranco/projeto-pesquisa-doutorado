@@ -263,8 +263,8 @@ Não foram encontrados na literatura algoritmos paralelos para a versão
 
 \section{Objetivos}
 
-O principal objetivo deste trabalho é obter um algoritmo Multi-BSP para resolver
-a versão 3D do problema da submatriz de soma máxima. A versão sequêncial deste
+O principal objetivo deste trabalho é estudar e obter algoritmos Multi-BSP
+para resolver a versão 3D do problema da submatriz de soma máxima. A versão sequêncial deste
 problema possui complexidade $O(n^5)$, tornando o algoritmo proibitivamente
 custoso, motivando a obtenção de versões paralelas para resolução do problema
 dentro de um período de tempo aceitável.
@@ -275,9 +275,15 @@ disso, características não incorporadas ao modelo PRAM durante o
 desenvolvimento dos algoritmos, tais como custo adicional para referência à memória global e latência, 
 têm grande impacto no desempenho das implementações \cite{castro2003}.
 
-
+As placas gráficas que permitem a programação GPGPU já são otimizadas para
+maninular dados em duas e três dimensões, sugerindo que um algoritmo Multi-BSP
+direcionados a essa arquitetura pode fornecer bons resultados. Ainda assim, é
+importante que outras arquiteturas sejam estudadas, seja para comparar as
+estruturas do algoritmo como para comparar os \textit{speedups} obtidos.
 
 \section{Metodologia}
+
+
 
 \section{Etapas e Cronograma}
 
