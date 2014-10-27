@@ -10,6 +10,7 @@
 \usepackage{comment}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{hyperref}
 %-------------------------------------------------------------------------------
 \newcommand{\p}{$\bullet$}
 %-------------------------------------------------------------------------------
@@ -122,11 +123,11 @@ para aquela configuração, resultando assim em um algoritmo $O(n^3)$.
 
 Em função do volume de dados das aplicações descritas anteriormente, as
 versões apresentadas, executando em computadores tradicionais sequenciais, podem
-não apresentar os resultados dentre de um período de tempo satisfatório. Por
+não apresentar os resultados dentro de um período de tempo satisfatório. Por
 esse motivo, diversos algoritmos paralelos, em diversos modelos, foram
 apresentados para minimizar este problema.
 
-\subsubsection{PRAM - Parallel Random Access Machine}
+\subsubsection{PRAM}
 
 O modelo PRAM (\textit{Parallel Random Access Machine}) é uma máquina paralela
 abstrata utilizada para modelar algoritmos paralelos teóricos que teriam um
@@ -143,7 +144,7 @@ n})$ processadores. Para o problema 2D, o algoritmo apresentado também possui
 complexidade $O(log n)$, utilizando $O(\frac{n^3}{log
 n})$ processadores.
 
-\subsubsection{BSP - Bulk Synchronous Parallel}
+\subsubsection{BSP}
 
 Leslie Valiant propôs o modelo BSP (\textit{Bulk Synchronous
 Parallel}), com o objetivo de aproximar o
@@ -156,8 +157,9 @@ algoritmo BSP.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=.35\textwidth]{bsp.png}
-\caption{Super passo BSP (computação local, comunicação e barreira de
-sincronização)}
+\caption{Super passo BSP - computação local, comunicação e barreira de
+sincronização (Fonte:
+\url{http://ww2.cs.mu.oz.au/~aaron/subjects/comp90025_2011_sm2/lectures/node195.html}) }
 \label{fig:bsp}
 \end{figure}
 
@@ -169,25 +171,111 @@ consisten de uma sequência de rodadas, alternando entre etapas de computação 
 comunicação separados por barreiras de comunicação.
 
 Alves \textit{et al} apresentam algoritmos BSP/CGM tanto para o problema 1D
-quanto para o problema 2D \cite{alves2004}. O problema 1D é resolvido com $p$
-processadores, com tempo de computação local igual a  $O(\frac{n}{p})$ e $O(1)$
+quanto para o problema 2D \cite{alves2004}. O problema 1D é resolvido
+com $p$ processadores, com tempo de computação local igual a  $O(\frac{n}{p})$ e $O(1)$
 rodadas de comunicação. A solução do problema 2D difere do problema 1D no tempo
 de computação local, pois este é igual a $O(\frac{n^3}{p})$.
 
+\subsubsection{Multi-BSP}
+
+O surgimento de arquiteturas \textit{multicore} e \textit{manycore} despertou a
+possibilidade de construção de implementação de algoritmos em plataformas
+híbridas. Com essa perspectiva, Valiant apresentou o modelo Multi-BSP
+\cite{Valiant:2008:BMM:1431008.1431011}, modelo este que explicita parâmetros
+como número de processadores, tamanho de memória e cache, custos de comunicação
+e sincronização.
+
+A resolução dos problemas 1D e 2D para este modelo normalmente são apresentadas
+em nível de implementação com demonstrações de \textit{speedup} em relação às
+implementações já conhecidas na literatura, apresentados principalmente para os
+modelos PRAM e BSP/CGM \cite{6473291,doi:10.1117/12.928318,takaoka2014efficient}.
+
+\subsection{Bibliotecas e implementações Paralelas}
+
+A efetividade dos algoritmos propostos é comprovada através de implementação dos
+mesmos em alguma arquitetura disponível, apresentando o \textit{speedup} em
+relação ao algoritmo sequencial tradicional, quando esta implementação é
+possível.
+
+\subsubsection{OpenMP}
+
+A biblioteca OpenMP\footnote{\url{http://openmp.org/wp/}} permite o paralelismo
+em através de memória compartilhada com utilização de \textit{threads} (que atuam
+como os processadores dos algoritmos) para arquiteturas \textit{multicore}. A
+comunicação entre os processadores é feita via memória compartilhada, ficando
+sob responsabilidade do programador tratar de questões como regiões críticas e
+condições de corrida.
+
+\subsubsection{MPI}
+
+O modelo BSP/CGM pode facilmente ser implementado utilizando bibliotecas que
+implementam o padrão MPI (\textit{Message Passing
+Interface})\footnote{\url{https://computing.llnl.gov/tutorials/mpi/}}.
+Utilizando este padrão, os processadores são tipicamente interligados através de uma rede de
+comunicação, cada um com sua memória local, e a comunicação é feita através da
+troca explícita de dados entre eles. O conjunto de processadores formam então um
+\textit{cluster}, onde as aplicações podem ser executadas.
+
+\subsubsection{GPGPU}
+
+Por fim, a popularização de dispositivos GPGPU (\textit{General Purpose Graphics
+Processing Unit}), devido a velocidade de processamento e número de
+processadores, despertou a atenção dos pesquisadores para a implementação de
+algoritmos paralelos para esta arquitetura. Os processadores das placas gráficas, conhecidos como dispositivo GPU, possuem
+alguns SM (\textit{Stream Multiprocessor}), que executam um conjunto de blocos, e estes
+por sua vez executam um conjunto de \textit{threads}. A comunicação entre as
+\textit{threads} é feita através da memória global do dispositivo, e a
+sincronização entre blocos é feita através do lançamento de \textit{kernels},
+unidade básica de configuração de uma rodada de execução. Implementações
+conhecidas de programação GPGPU são CUDA (\textit{Compute Unified Device
+Architecture})\footnote{\url{http://www.nvidia.com.br/object/cuda_home_new_br.html}}
+e OpenCl (\textit{Open Compute
+Language})\footnote{\url{https://www.khronos.org/opencl/}}.
+
+\subsubsection{Mapeamento de modelos para implementações}
+
+Nem sempre é possível implementar diretamente um algoritmo descritos nos modelos
+PRAM, BSP, BSP/CGM ou mesmo Multi-BSP diretamente para uma arquitetura alvo.
+Detalhes e limitações como número de processadores, tamanho de memória e forma
+de comunicação e sincronização pode forçar a mudanças no algoritmo para
+adequá-lo a realidade da arquitetura, podendo resultar em um algoritmo
+completamente novo para um problema já conhecido.
+
 \subsection{O problema 3D}
 
-Os problemas 1D e 2D podem ser generalizados para $d$ dimensões, da seguinte
-forma: dado um cubo $d-$dimensional com lado de tamanho $n$ de números reais,
+Perumalla e Deo\cite{journals/ppl/PerumallaD95} indicam que os problemas 1D e 2D
+podem ser generalizados para $d$ dimensões, da seguinte forma: dado um cubo $d-$dimensional com lado de tamanho $n$ de números reais,
 encontre o sub$-d-$cubo que possui a maior soma de todos os sub$-d-$cubos
-possíveis \cite{journals/ppl/PerumallaD95}. Usando a mesma estratégia da versão
-2D descrita anteriormente, é possível descrever um algoritmo para resolver o
-problema $n-$dimensional.
+possíveis. Usando a mesma estratégia da versão 2D descrita anteriormente, é
+possível descrever um algoritmo para resolver o problema $n-$dimensional. O
+algoritmo PRAM sugerido para um $d-$cubo com lado de tamanho $n$ pode ser
+computado em $O(log n)$, usando $n\binom{n}{2}^{d-1}$ processadores.
 
+Partindo da motivação de localização de áreas de interesse em uma imagem médica,
+podemos estender essa análise para modelos médicos 3D, gerados por exemplo, a
+partir de uma ressonância magnética. Dessa forma, a resolução do problema 3D se
+mostra atrativa. Contudo, o algoritmo sequencial 3D conhecido tem complexidade
+$O(n^5)$, enquanto a versão PRAM verificada precisa de $O(n^5)$ processadores.
 
-
+Não foram encontrados na literatura algoritmos paralelos para a versão
+3D, tampouco implementações paralelas para resolução deste problema.
 
 
 \section{Objetivos}
+
+O principal objetivo deste trabalho é obter um algoritmo Multi-BSP para resolver
+a versão 3D do problema da submatriz de soma máxima. A versão sequêncial deste
+problema possui complexidade $O(n^5)$, tornando o algoritmo proibitivamente
+custoso, motivando a obtenção de versões paralelas para resolução do problema
+dentro de um período de tempo aceitável.
+
+O algoritmo PRAM apresentado não pode ser implementando nas arquiteturas
+disponíveis, pois o número de processadores utilizado também é proibitivo. Além
+disso, características não incorporadas ao modelo PRAM durante o
+desenvolvimento dos algoritmos, tais como custo adicional para referência à memória global e latência, 
+têm grande impacto no desempenho das implementações \cite{castro2003}.
+
+
 
 \section{Metodologia}
 
@@ -196,7 +284,7 @@ problema $n-$dimensional.
 \section{Resultados Esperados}
 
 %-------------------------------------------------------------------------------
-\bibliographystyle{unsrt}
+\bibliographystyle{apalike}
 \bibliography{proposta}
 %-------------------------------------------------------------------------------
 \end{document}
