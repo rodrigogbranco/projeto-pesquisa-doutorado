@@ -44,7 +44,7 @@ Federal de Mato Grosso Sul e a Universidade Federal de Goiás.}
 
 \vskip 2.5cm
 
-\Large{Candidato: Rodrigo Gonçalves de Branco}
+\Large{Rodrigo Gonçalves de Branco}
 
 \vskip 2.0cm
 
@@ -71,33 +71,34 @@ Campo Grande--MS, outubro de 2014
 
 O problema da subsoma de tamanho máximo pode ser definido como: dado um conjunto
 de $n$ números reais, a subsoma de tamanho máximo é a maior soma contígua de
-elementos, dentre todas as possíveis somas contíguas possíveis no conjunto
-dado \cite{bentley2000programming}, tendo a Figura \ref{fig:maxsubsum} como
-exemplo. Este problema pode ser encontrado em diversas áreas, como Biologia
-Computacional, principalmente na localização de segmentos biológicos significantes e identificação de domínios
+elementos, dentre todas as somas contíguas possíveis no conjunto
+dado \cite{bentley2000programming}. A Figura \ref{fig:maxsubsum} apresenta um
+exemplo do problema citado e as possíveis soluções.
+Este problema pode ser encontrado em diversas áreas, como Biologia Computacional, principalmente na localização de segmentos biológicos significantes e identificação de domínios
 transmembranos em uma sequência de proteínas \cite{bae2007}. Jay Kadane
 apresentou um algoritmo de complexidade $O(n)$ para resolver o problema descrito, utilizando 
 programação dinâmica \cite{bentley2000programming}.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=\textwidth]{maxsubsum.png}
+\includegraphics[width=.8\textwidth]{maxsubsum.png}
 \caption{Vetor com 12 elementos, com duas subsomas de tamanho máximo.}
 \label{fig:maxsubsum}
 \end{figure}
 
-Este problema pode ser estendido para duas dimensões. Dado uma matriz de $nxn$
+Este problema pode ser estendido para duas dimensões. A motivação para este problema pode ser
+encontrada em áreas como visão computacional, identificando em imagens (sejam
+elas de áreas médicas, de astronomia, termais, entre outras) as regiões de
+interesse. Dado uma matriz de $nxn$
 números reais, a submatriz de soma máxima é a maior submatriz retangular cuja
 soma de seus elementos apresenta a soma máxima, dentre todas as submatrizes
 possíveis no conjunto de entrada apresentado. A Figura \ref{fig:maxsubarray}
-apresenta um exemplo para este problema. A motivação para este problema pode ser
-encontrada em áreas como visão computacional, identificando em imagens (sejam
-elas de áreas médicas, de astronomia, termais, entre outras) as regiões de
-interesse. A Figura \ref{fig:brightest} apresenta um exemplo desta aplicação.
+apresenta um exemplo para este problema e a Figura \ref{fig:brightest} apresenta
+um exemplo desta aplicação.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=.4\textwidth]{maxsubarray.png}
+\includegraphics[width=.35\textwidth]{maxsubarray.png}
 \caption{A região destacada é submatriz de soma máxima para a matriz
 apresentada.}
 \label{fig:maxsubarray}
@@ -105,7 +106,7 @@ apresentada.}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=.6\textwidth]{brightest.png}
+\includegraphics[width=.4\textwidth]{brightest.png}
 \caption{Área mais brilhante em uma imagem de astronomia \cite{bae2007}.}
 \label{fig:brightest}
 \end{figure}
@@ -126,7 +127,7 @@ $O(n^3)$.
 Em função do volume de dados das aplicações descritas anteriormente, as
 versões apresentadas, executando em computadores tradicionais sequenciais, podem
 não apresentar os resultados dentro de um período de tempo satisfatório. Por
-esse motivo, diversos algoritmos paralelos, em diversos modelos, foram
+esse motivo, algoritmos paralelos em diversos modelos foram
 apresentados para minimizar este problema.
 
 \subsubsection{PRAM}
@@ -137,7 +138,36 @@ comportamento previsível em termos assintóticos em computadores paralelos reai
 A vantagem do modelo PRAM é que ele ignora questões como comunicação entre os
 processadores, permitindo que seu utilizador foque no potencial paralelismo do
 algoritmo proposto. Os processadores não estão diretamente interligados entre
-si, mas possuem acesso a uma memória global, onde podem trocar informações.
+si, mas possuem acesso a uma memória global, onde podem trocar informações. A
+Figura \ref{fig:pram} apresenta uma representação visual do modelo PRAM. 
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.4\textwidth]{pram.png}
+\caption{Modelo PRAM (Fonte:
+\url{http://www.cs.uku.fi/~penttone/parallel/pram.html}) }
+\label{fig:pram}
+\end{figure}
+
+Para deixar o modelo PRAM um pouco mais realístico, é possível especificar a
+forma de acesso à memória, a fim de evitar conflitos de região crítica e condições de
+corrida. As estratégias são:
+
+\begin{itemize}
+  \item EREW (\textit{Exclusive read exclusive write}) - cada posição de memória
+  deve ser lida ou escrita por apenas um processador de cada vez;
+  \item CREW (\textit{Concurrent read exclusive write}) -  vários processadores
+  podem ler uma posição de memória ao mesmo tempo, mas apenas um processador
+  pode escrever na mesma de cada vez;
+  \item ERCW (\textit{Exclusive read concurrent write}) - vários processadores
+  podem escrever em uma posição de memória ao mesmo tempo, mas apenas um
+  processador pode lê-la de cada vez;
+  \item CRCW (\textit{Concurrent read concurrent write}) - vários processadores
+  podem ler e/ou escrever ao mesmo tempo.
+\end{itemize}
+
+Quando nada é dito sobre um algoritmo PRAM, neste trabalho é assumido que ele
+utiliza a estratégia EREW, por ser mais próxima das arquiteturas existentes.
 
 É possível encontrar algoritmos, tanto para o problema 1D quanto para o 2D,
 descritos no modelo PRAM. Em \cite{journals/ppl/PerumallaD95}, para o problema
@@ -159,8 +189,7 @@ algoritmo BSP.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=.4\textwidth]{bsp.png}
-\caption{Super passo BSP - computação local, comunicação e barreira de
-sincronização (Fonte:
+\caption{Modelo BSP (Fonte:
 \url{http://ww2.cs.mu.oz.au/~aaron/subjects/comp90025_2011_sm2/lectures/node195.html}) }
 \label{fig:bsp}
 \end{figure}
@@ -215,7 +244,17 @@ como os processadores dos algoritmos teóricos) para arquiteturas
 \textit{multicore}. A comunicação entre os processadores é feita via memória
 compartilhada, ficando sob responsabilidade do programador tratar de questões como regiões críticas e
 condições de corrida. Portanto, um processo é iniciado e dentro dele
-\textit{threads} são criadas para resolver um problema em comum.
+\textit{threads} são criadas para resolver um problema em comum. A Figura
+\ref{fig:openmp} apresenta a divisão e união das \textit{threads} para a
+resolução do problema utilizando a biblioteca OpenMP.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.6\textwidth]{fork_join2.png}
+\caption{Explicitação das regiões paralelas utilizando \textit{threads} com a
+biblioteca OpenMP (Fonte: \url{https://computing.llnl.gov/tutorials/openMP/})}
+\label{fig:openmp}
+\end{figure}
 
 \subsubsection{MPI}
 
@@ -225,7 +264,20 @@ Interface})\footnote{\url{https://computing.llnl.gov/tutorials/mpi/}}.
 Utilizando este padrão, os processadores são tipicamente interligados através de uma rede de
 comunicação, cada um com sua memória local, e a comunicação é feita através da
 troca explícita de dados entre eles. O conjunto de processadores formam então um
-\textit{cluster}, onde as aplicações podem ser executadas.
+\textit{cluster}, onde as aplicações podem ser executadas. É interessante
+destacar que as máquinas que compõem o \textit{cluster} podem ser ser de
+diferentes arquiteturas, com diferentes sistemas operacionais, tendo em comum o
+programa a ser executação e o padrão e protocolo de comunicação entre elas. A
+Figura \ref{fig:mpi} apresenta a estrutura de comunicação de sistemas que usam o
+padrão MPI.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.35\textwidth]{mpi.png}
+\caption{Modelo de comunicação MPI (Fonte:
+\url{http://nf.nci.org.au/training/MPIProg/slides/allslides.html})}
+\label{fig:mpi}
+\end{figure}
 
 \subsubsection{GPGPU}
 
@@ -241,7 +293,27 @@ unidade básica de configuração de uma rodada de execução. Implementações
 conhecidas de programação GPGPU são CUDA (\textit{Compute Unified Device
 Architecture})\footnote{\url{http://www.nvidia.com.br/object/cuda_home_new_br.html}}
 e OpenCl (\textit{Open Compute
-Language})\footnote{\url{https://www.khronos.org/opencl/}}.
+Language})\footnote{\url{https://www.khronos.org/opencl/}}. A Figura
+\ref{fig:cuda-arranje} apresenta a organização de um multiprocessador da
+arquitetura CUDA, enquanto a Figura \ref{fig:cuda-execution} apresenta o modelo
+simplificado de \textit{threads} CUDA.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.4\textwidth]{cuda-arranje.png}
+\caption{Organização de um Multiprocessador CUDA (Fonte:
+\url{http://wiki.expertiza.ncsu.edu/index.php/CSC/ECE_506_Spring_2011/ch2a_mc}) }
+\label{fig:cuda-arranje}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=.4\textwidth]{Cuda_execution.png}
+\caption{Modelo de Threads CUDA (Fonte:
+\url{http://wiki.expertiza.ncsu.edu/index.php/CSC/ECE_506_Spring_2011/ch2a_mc}) }
+\label{fig:cuda-execution}
+\end{figure}
+
 
 \subsubsection{Mapeamento de modelos para implementações}
 
@@ -297,7 +369,7 @@ estruturas do algoritmo como para comparar os \textit{speedups} obtidos.
 O desenvolvimento do presente projeto estrutura-se nas seguintes atividades:
 
 \begin{enumerate}
-  \item complementar a revisão bibliográfica já realizada, detalhando os
+  \item complementar a revisão bibliográfica iniciada, detalhando os
   algoritmos, implementações e detalhes que mereçam destaque para o projeto;
   \item estudar as bibliotecas OpenMp, MPI e CUDA/OpenCl, para implementação
   dos algoritmos presentes na literatura;
@@ -331,24 +403,23 @@ organizado em termos das etapas que consistem em pontos importantes do curso e d
 \hline
 \multicolumn{ 1}{|c|}{\textbf{Cronograma previsto}} & \multicolumn{ 2}{c|}{\textbf{1º Ano}} & \multicolumn{ 2}{c|}{\textbf{2º ano}} & \multicolumn{ 2}{c|}{\textbf{3º ano}} & \multicolumn{ 2}{c|}{\textbf{4º ano}} \\ \cline{ 2- 9}
 \multicolumn{ 1}{|l|}{} & 1º Sem & 2º Sem & 3º Sem & 4º Sem & 5º Sem & 6º Sem & 7º Sem & 8º Sem \\ \hline
-Obtenção de Créditos em disciplinas & X & X &  &  &  &  &  &  \\ \hline
-Revisão da Literatura &  & X & X &  &  &  &  &  \\ \hline
-Planejamento e modelagem dos algoritmos &  &  & X & X &  &  &  &  \\ \hline
-Implementação dos algoritmos &  &  &  & X & X & X &  &  \\ \hline
-Testes dos algoritmos &  &  &  &  & X & X &  &  \\ \hline
-Verificação de resultados &  &  &  &  &  & X & X &  \\ \hline
-Comparação com outras soluções já desenvolvidas &  &  &  &  &  & X & X &  \\ \hline
-Ajustes e otimização dos algoritmos desenvolvidos &  &  &  &  &  &  & X &  \\ \hline
-Análise e interpretação dos resultados &  &  &  &  &  &  & X &  \\ \hline
-Publicação de artigos &  &  &  &  &  &  & X & X \\ \hline
-Escrita da tese &  &  &  &  & X & X & X & X \\ \hline
+Obtenção de Créditos em disciplinas & \p & \p &  &  &  &  &  &  \\ \hline
+Revisão da Literatura &  & \p & \p &  &  &  &  &  \\ \hline
+Planejamento e modelagem dos algoritmos &  &  & \p & \p &  &  &  &  \\ \hline
+Implementação dos algoritmos &  &  &  & \p & \p & \p &  &  \\ \hline
+Testes dos algoritmos &  &  &  &  & \p & \p &  &  \\ \hline
+Verificação de resultados &  &  &  &  &  & \p & \p &  \\ \hline
+Comparação com outras soluções já desenvolvidas &  &  &  &  &  & \p & \p &  \\ \hline
+Ajustes e otimização dos algoritmos desenvolvidos &  &  &  &  &  &  & \p &  \\ \hline
+Análise e interpretação dos resultados &  &  &  &  &  &  & \p &  \\ \hline
+Publicação de artigos &  &  &  &  &  &  & \p & \p \\ \hline
+Escrita da tese &  &  &  &  & \p & \p & \p & \p \\ \hline
 \end{tabular}%
 }
 \end{center}
 \caption{Cronograna de Execução do Projeto Previsto}
 \label{tab:cronograma}
 \end{table}
-
 
 
 \section{Resultados Esperados}
